@@ -14,14 +14,14 @@ export default function RegisterForm(){
    password:"",
    repeatPassword:"",
    privacyPolicy:false
- })
+ });
 
  const [formValid,setFormValid]=useState({
    email:false,
    password:false,
    repeatPassword:false,
    privacyPolicy:false
- })
+ });
 
  const changeForm = e =>{
    if(e.target.name === "privacyPolicy"){

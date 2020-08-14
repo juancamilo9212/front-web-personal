@@ -23,8 +23,6 @@ export default function LayOutAdmin(props){
             )
     }
     
-    
-    
     return (
         <Layout>
             <MenuSider menuCollapsed={menuCollapsed}/>
