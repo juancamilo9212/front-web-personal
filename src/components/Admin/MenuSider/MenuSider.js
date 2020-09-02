@@ -1,31 +1,34 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link,withRouter} from 'react-router-dom';
 import {Layout, Menu} from 'antd';
-import {HomeOutlined,MenuUnfoldOutlined} from '@ant-design/icons';
+import {HomeOutlined,UserOutlined} from '@ant-design/icons';
 import './MenuSider.scss';
 
-export default function MenuSider(props){
+ function MenuSider(props){
     
-    const {menuCollapsed}=props;
+    const {menuCollapsed,location}=props;
     const {Sider}=Layout;
     const {Item}=Menu;
 
     return(
         <Sider className="admin-sider" collapsed={menuCollapsed}>
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-                <Item key="1">
+            <Menu theme="dark" mode="inline" 
+            defaultSelectedKeys={[location.pathname]}>
+                <Item key="/admin">
                 <Link to={"/admin"}>
                 <HomeOutlined/>
                 <span className="nav-text">Home</span>
                 </Link>
                 </Item>
-                <Item key="2">
-                <Link to={"/admin/menu-web"}>
-                <MenuUnfoldOutlined />
-                <span>Menu Web</span>
+                <Item key="/admin/users">
+                <Link to={"/admin/users"}>
+                <UserOutlined />
+                <span>Usuarios</span>
                 </Link>
                 </Item>
             </Menu>
         </Sider>
     )
 }
+
+export default  withRouter(MenuSider);

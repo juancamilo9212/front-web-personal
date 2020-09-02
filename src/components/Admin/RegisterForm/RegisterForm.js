@@ -55,7 +55,7 @@ const inputValidation = e =>{
 }
 
  const register = async e =>{
-    //const {email,password,repeatPassword,privacyPolicy}=formValid;
+    
     const passwordVal=input.password
     const repeatPasswordVal=input.repeatPassword
   if(!input.email || !passwordVal || !repeatPasswordVal || !input.privacyPolicy){

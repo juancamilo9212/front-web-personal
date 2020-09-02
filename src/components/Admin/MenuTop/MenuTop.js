@@ -1,12 +1,19 @@
 import React from 'react';
 import { Button} from 'antd';
 import {MenuUnfoldOutlined, MenuFoldOutlined,PoweroffOutlined} from '@ant-design/icons';
-import './MenuTop.scss'
-import logo from '../../../assets/img/png/logo.png'
+import './MenuTop.scss';
+import logo from '../../../assets/img/png/logo.png';
+import {logOut} from '../../../api/auth';
+import { Redirect } from 'react-router-dom';
 
 export default function MenuTop(props){
 
     const {menuCollapsed,setMenuCollapsed}=props;
+
+    const logOutUser= () =>{
+        logOut();
+        window.location.reload();
+    }
 
     return (
         <div className="menu-top">
@@ -21,7 +28,7 @@ export default function MenuTop(props){
                 </Button>
             </div>
             <div className="menu-top__right">
-                <Button type="link" onClick={() => console.log('Log Out')}>
+                <Button type="link" onClick={logOutUser}>
                 <PoweroffOutlined/>
                 </Button>
             </div>

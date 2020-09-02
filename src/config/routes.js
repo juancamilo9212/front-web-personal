@@ -6,6 +6,7 @@ import LayOutBasic from '../layouts/LayOutBasic'
 //AdminPage
 import AdminHome from '../pages/admin';
 import AdminSignIn from '../pages/admin/SignIn';
+import AdminUsers from '../pages/admin/Users';
 
 //Page
 import Home from '../pages/web/Home'
@@ -26,6 +27,10 @@ const routes=[
             {
                 path:'/admin/login',
                 component:AdminSignIn,
+                exact:true
+            },{
+                path:'/admin/users',
+                component:AdminUsers,
                 exact:true
             },
             {

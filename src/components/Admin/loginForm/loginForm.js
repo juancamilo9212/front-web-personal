@@ -5,16 +5,18 @@ import "./loginForm.scss";
 import { signIn } from '../../../api/user';
 import {ACCESS_TOKEN,REFRESH_TOKEN} from '../../../utils/constants';
 
+
 export default function loginForm(){
 
     const {Item}=Form;
-
+    
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [input, setinput] = useState({
         email:"",
         password:""});
 
     const changeForm = e =>{
+        
         setinput({
             ...input,
             [e.target.name]:e.target.value
@@ -23,7 +25,6 @@ export default function loginForm(){
 
     const login = async () =>{
        const result= await signIn(input);
-       console.log(result);
        if(result.message){
            notification["error"]({
                message:result.message
@@ -32,9 +33,8 @@ export default function loginForm(){
            const {accessToken,refreshToken}=result;
            localStorage.setItem(ACCESS_TOKEN,accessToken)
            localStorage.setItem(REFRESH_TOKEN,refreshToken)
-           
            notification["success"]({
-               message:"Login Correcto"
+            message:"Login Correcto"
            });
            window.location.href="/admin"
        }
