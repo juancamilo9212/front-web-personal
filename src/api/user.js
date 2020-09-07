@@ -12,15 +12,12 @@ export function signUpApi(data){
     };
 
     return fetch(url,params).then(response =>{
-        console.log(response)
         return response.json();
     }).then(result=>{
-        if(result.user){
-            return {ok:true,message:"El usuario fue creado correctamente" };
-        }
-         return {ok:false,message:result.message};
+        console.log(result);
+        return result;
     }).catch(err=>{
-        return {ok:false,message:err.message};
+        return err.message;
     })
 }
 
@@ -49,7 +46,7 @@ export function getUsersApi(token){
         method:"GET",
         headers:{
             "Content-Type":"application/json",
-            "Authorization": token
+            Authorization: token
         }
     };
 
@@ -63,12 +60,12 @@ export function getUsersApi(token){
 }
 
 export function getActiveUsersApi(token,status){
-    const url= `${BASE_PATH}/${API_VERSION}/users-active?active=${status}`;
+    const url= `${BASE_PATH}/${API_VERSION}/users-active/?active=${status}`;
     const params={
         method:"GET",
         headers:{
             "Content-Type":"application/json",
-            "Authorization": token
+            Authorization: token
         }
     };
 
@@ -79,4 +76,98 @@ export function getActiveUsersApi(token,status){
     }).catch(err =>{
         return err.message;
     })
+}
+
+export function uploadAvatarApi(token,avatar,userId){
+const url=`${BASE_PATH}/${API_VERSION}/load-avatar/${userId}`;
+const formData=new FormData();
+formData.append("avatar", avatar, avatar.name);
+const params={
+    method:"PUT",
+    body:formData,
+    headers:{
+        Authorization: token
+    }
+    
+}
+return fetch(url,params).then(response=>{
+return response.json()
+}).then(result=>{
+    return result;
+}).catch(err=>{
+    return err.message;
+})
+}
+
+export function getAvatarApi(token,avatarName){
+    const url=`${BASE_PATH}/${API_VERSION}/avatar/${avatarName}`;
+    const params={
+        method:'GET',
+        headers:{Authorization:token}
+    }
+    return fetch(url,params).then(response=>{
+        return response.url;
+    }).catch(err=>{
+       return err.message;
+    })
+
+}
+
+export function updateUserApi(token,userData,userId){
+    const url=`${BASE_PATH}/${API_VERSION}/update-user/${userId}`;
+    const params={
+        method:"PUT",
+        body:JSON.stringify(userData),
+        headers:{
+            "Content-Type":"application/json",
+            Authorization: token}
+    }  
+
+    return fetch(url,params).then(response=>{
+        return response.json()
+    }).then(result=>{
+        return result;
+    }).catch(err=>{
+        return err.message;
+    })
+}
+
+export function activateUserApi(token,userId,status){
+    const url=`${BASE_PATH}/${API_VERSION}/activate-user/${userId}/?active=${status}`;
+    const params={
+        method:'PUT',
+        headers:{
+            Authorization: token,
+            "Content-Type":"application/json"
+        }
+    }
+
+    return fetch(url,params).then(response =>{
+        return response.json();
+    }).then(result =>{
+        return result.message;
+    }).catch(err =>{
+        return err.message;
+    })
+}
+
+export function deleteUserApi(token,userId){
+    const url= `${BASE_PATH}/${API_VERSION}/delete-user/${userId}`;
+    const params={
+        method:'DELETE',
+        headers:{
+            Authorization:token,
+            "Content-Type":"applicaton/json"
+        }
+    }
+
+    return fetch(url,params).then(response =>{
+        return response.json();
+    }).then(result =>{
+        return result.message;
+    }).catch(err =>{
+        return err.message;
+    })
+
+
 }

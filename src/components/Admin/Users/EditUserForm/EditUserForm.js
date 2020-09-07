@@ -1,39 +1,110 @@
 import React,{useState,useCallback,useEffect} from 'react';
-import {Avatar, Form, Input, Select, Button, Row, Col} from 'antd';
+import {Avatar, Form, Input, Select, Button, Row, Col,notification, Result} from 'antd';
 import {useDropzone} from 'react-dropzone';   
 import "./EditUserForm.scss";
 import NoAvatar from '../../../../assets/img/png/no-avatar.png';
 import {UserOutlined, MailOutlined, LockOutlined} from '@ant-design/icons';
+import {getAvatarApi,uploadAvatarApi,updateUserApi}from '../../../../api/user';
+import {getAccessTokenApi} from '../../../../api/auth';
 
 export default function EditUserForm(props){
    
-const {user}=props;
+const {user,setIsVisibleModal,setReloadUsers}=props;
 const [avatar,setAvatar] = useState(null)
-const [userData,setUserData]=useState({
-    name:user.name,
-    lastname:user.lastname,
-    email:user.email,
-    role:user.role,
-    avatar:user.avatar
-});
+const [userData,setUserData]=useState({});
+
 
 const updateUser = e=>{
+
 e.preventDefault();
-console.log(userData);
+const token=getAccessTokenApi();
+let userUpdate=userData;
+
+
+if(userUpdate.password || userUpdate.repeatPassword){
+    if(userUpdate.password !== userUpdate.repeatPassword){
+        notification["error"]({
+            message: "Las contraseñas deben ser iguales"
+        });
+        return;
+    }else{
+        delete userUpdate.repeatPassword;
+    }
+}
+
+if(!userUpdate.name || !userUpdate.lastName || !userUpdate.email){
+    notification["error"]({
+        message: "El nombre, apellido y email son obligatorios"
+    }); 
+    return;
+}
+
+if(typeof userUpdate.avatar == "object"){
+    uploadAvatarApi(token,userUpdate.avatar,user._id).then(response=>{
+        userUpdate.avatar=response.avatarName;
+        updateUserApi(token,userUpdate,user._id).then(result=>{
+            notification["success"]({
+            message: result.message
+            });
+            setIsVisibleModal(false);
+            setReloadUsers(true);
+            setUserData({
+                password:null,
+                repeatPassword:null,
+            })
+    });
+});
+}else{
+    updateUserApi(token,userUpdate,user._id).then(result=>{
+        notification["success"]({
+        message: result.message
+        });
+    setIsVisibleModal(false);
+    setReloadUsers(true);
+    setUserData({
+        password:null,
+        repeatPassword:null,
+    })
+    });
+}   
 }
 
 useEffect(() => {
+    setUserData({
+    name:user.name,
+    lastName:user.lastName,
+    email:user.email,
+    role:user.role,
+    avatar:user.avatar
+    })
+}, [user])
+
+
+useEffect(() => {
+    const token=getAccessTokenApi();
+    if(user.avatar){
+        getAvatarApi(token,user.avatar).then(response=>{
+        setAvatar(response);
+        });
+    }else{
+        setAvatar(null);
+    }
+}, [user])
+
+
+useEffect(() => {
     if(avatar){
-        setUserData({...userData,avatar})
+        setUserData({...userData,avatar:avatar.file})
     }
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [avatar])
-//console.log(avatar);
 
 
-   return(<div className="edit-user-form">
+
+   return(
+   <div className="edit-user-form">
     <UploadAvatar avatar={avatar} setAvatar={setAvatar}/>
-    <EditForm user={user} 
+    <EditForm  
     userData={userData} 
     setUserData={setUserData}
     updateUser={updateUser}
@@ -44,6 +115,20 @@ useEffect(() => {
 
 function UploadAvatar(props){
     const {avatar,setAvatar} = props;
+    const [avatarUrl,setAvatarUrl]=useState(null);
+
+    useEffect(() => {
+       if(avatar){
+           if(avatar.preview){
+               setAvatarUrl(avatar.preview);
+           }else{
+               setAvatarUrl(avatar);
+           }
+       }else{
+        setAvatarUrl(null);
+       }
+    }, [avatar])
+
 
     const onDrop= useCallback(
         (acceptedFiles) => {
@@ -65,9 +150,8 @@ function UploadAvatar(props){
             {isDragActive ? (
             <Avatar size={150} src={NoAvatar}/>
             ): 
-            <Avatar size={150} src={avatar ? avatar.preview: NoAvatar}/>
+            <Avatar size={150} src={avatarUrl ? avatarUrl:NoAvatar}/>
             }
-            
         </div>
     )
 }
@@ -85,7 +169,7 @@ function EditForm(props){
                     <Input 
                     prefix={<UserOutlined/>}
                     placeholder="Nombre"
-                    defaultValue={userData.name}
+                    value={userData.name}
                     onChange={e=>setUserData({...userData, name:e.target.value})}
                     >
                     </Input>
@@ -96,8 +180,8 @@ function EditForm(props){
                     <Input 
                     prefix={<UserOutlined/>}
                     placeholder="Apellidos"
-                    defaultValue={userData.lastname}
-                    onChange={e=>setUserData({...userData, lastname:e.target.value})}
+                    value={userData.lastName}
+                    onChange={e=>setUserData({...userData, lastName:e.target.value})}
                     >
                     </Input>
                 </Item>
@@ -110,7 +194,7 @@ function EditForm(props){
                     <Input 
                     prefix={<MailOutlined />}
                     placeholder="Correo Electrónico"
-                    defaultValue={userData.email}
+                    value={userData.email}
                     onChange={e=>setUserData({...userData, email:e.target.value})}
                     >
                     </Input>
@@ -121,7 +205,7 @@ function EditForm(props){
                     <Select
                     placeholder="Selecciona un rol"
                     onChange={e => setUserData({...userData, role: e})}
-                    defaultValue={userData.role}
+                    value={userData.role}
                     >
                         <Option value="admin">Administrador</Option>
                         <Option value="editor">Editor</Option>
@@ -139,6 +223,7 @@ function EditForm(props){
                     prefix={<LockOutlined />}
                     type="password"
                     placeholder="Contraseña"
+                    value={userData.password}
                     onChange={e=>setUserData({...userData, password:e.target.value})}
                     />
                 </Item>
@@ -149,6 +234,7 @@ function EditForm(props){
                     prefix={<LockOutlined />}
                     type="password"
                     placeholder="Repetir Contraseña"
+                    value={userData.repeatPassword}
                     onChange={e=>setUserData({...userData, repeatPassword:e.target.value})}
                     />
                 </Item>

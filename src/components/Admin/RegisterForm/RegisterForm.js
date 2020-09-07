@@ -55,7 +55,8 @@ const inputValidation = e =>{
 }
 
  const register = async e =>{
-    
+
+    e.preventDefault()
     const passwordVal=input.password
     const repeatPasswordVal=input.repeatPassword
   if(!input.email || !passwordVal || !repeatPasswordVal || !input.privacyPolicy){
@@ -68,18 +69,18 @@ const inputValidation = e =>{
           message: "Las contraseñas deben que ser iguales"
         });
       }else{
-        const result = await signUpApi(input);  
-        
-        if(!result.ok){
+        await signUpApi(input).then(result =>{
+        if(!result){
           notification["error"]({
-            message: result.message
+          message: "La creación del usuario ha fallado"
           });
         }else{
           notification["success"]({
-            message: result.message
+          message: "El usuario ha sido creado correctamente"
           });
           resetForm();
         }
+        })  
       }
     }
   }
