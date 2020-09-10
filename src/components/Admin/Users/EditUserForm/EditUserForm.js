@@ -1,5 +1,5 @@
 import React,{useState,useCallback,useEffect} from 'react';
-import {Avatar, Form, Input, Select, Button, Row, Col,notification, Result} from 'antd';
+import {Avatar, Form, Input, Select, Button, Row, Col, notification} from 'antd';
 import {useDropzone} from 'react-dropzone';   
 import "./EditUserForm.scss";
 import NoAvatar from '../../../../assets/img/png/no-avatar.png';

@@ -171,3 +171,23 @@ export function deleteUserApi(token,userId){
 
 
 }
+
+export function createUserApi(token,userData){
+    const url = `${BASE_PATH}/${API_VERSION}/create-user`;
+    const params= {
+        method: 'POST',
+        body: JSON.stringify(userData),
+        headers:{
+            Authorization: token,
+            "Content-Type":"application/json"
+        }
+    }
+
+    return fetch(url,params).then(response => {
+        return response.json();
+    }).then(result => {
+        return result.message;
+    }).catch(err => {
+        return err.message;
+    })
+}

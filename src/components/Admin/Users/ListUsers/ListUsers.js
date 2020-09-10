@@ -7,7 +7,8 @@ import EditUserForm from '../EditUserForm';
 import './ListUsers.scss';
 import {getAvatarApi,activateUserApi,deleteUserApi} from '../../../../api/user';
 import {getAccessTokenApi} from '../../../../api/auth';
-//import Modal from '../../../../components/Admin/Modal';
+import AddUserForm from '../AddUserForm';
+
 
 const {confirm}=ModalAntd;
 
@@ -18,6 +19,17 @@ export default function ListUsers(props){
     const [isVisibleModal,setIsVisibleModal]=useState(false)
     const [modalTitle,setModalTitle]=useState("")
     const [modalContent,setModalContent]=useState(null)
+
+    const addModalUser= () =>{
+
+        setIsVisibleModal(true);
+        setModalTitle("Creando nuevo usuario");
+        setModalContent(
+            <AddUserForm 
+            setIsVisibleModal={setIsVisibleModal} 
+            setReloadUsers={setReloadUsers}/>
+        )
+    }
     
     const deleteUser= (token,user) =>{
 
@@ -60,7 +72,10 @@ export default function ListUsers(props){
     
     return(
         <div className="list-users">
-            <div className="list-users__switch">
+
+            <div className="list-users__header">
+
+            <div className="list-users__header-switch">
             <Switch 
             defaultChecked
             onChange={() => setViewUserActive(!viewUserActive)}
@@ -69,6 +84,14 @@ export default function ListUsers(props){
                 {viewUserActive ? "Usuarios Activos":"Usuarios Inactivos"}
             </span>
             </div>
+            <Button type="primary" 
+            onClick={addModalUser}
+            
+            >
+                Nuevo Usuario
+            </Button>
+            </div>
+            
             {viewUserActive ? 
             <UserActive 
             usersActive={usersActive} 
