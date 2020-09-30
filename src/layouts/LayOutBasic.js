@@ -1,24 +1,28 @@
 import React from 'react';
 import {Route,Switch} from 'react-router-dom';
-import {Layout} from 'antd';
-import "./LayOutBasic.scss"
+import {Row, Col} from 'antd';
+import "./LayOutBasic.scss";
+import MenuTop from '../components/Web/MenuTop' ;
+import Footer from '../components/Web/Footer';
+
 
 export default function LayOutBasic(props){
 
     const {routes}=props;
     console.log(routes);
-    const {Content, Footer}= Layout;
 
-    return (
-        <Layout>
-            <h2>Menu Slider Basic User</h2>
-            <Layout>
-                <Content>
-                    <LoadRoutes routes={routes}/>
-                </Content>
-                <Footer>Juan Camilo Camargo</Footer>
-            </Layout>
-        </Layout>
+    return(
+    <>
+        <Row>
+            <Col md={4}/>
+            <Col md={16}>
+            <MenuTop/>
+            </Col>
+            <Col md={4}/>
+        </Row>
+        <LoadRoutes routes={routes}/>
+        <Footer/>
+    </>
     );
 }
 

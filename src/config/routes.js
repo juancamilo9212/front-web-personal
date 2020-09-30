@@ -8,11 +8,13 @@ import AdminHome from '../pages/admin';
 import AdminSignIn from '../pages/admin/SignIn';
 import AdminUsers from '../pages/admin/Users';
 import AdminMenuWeb from '../pages/admin/MenuWeb';
+import CoursesAdmin from '../pages/admin/Courses/Courses'
 
 //Page
 import Home from '../pages/web/Home'
 import Contact from '../pages/web/Contact'
 import Error404 from '../pages/Error404'
+import Courses from '../pages/Courses';
 
 const routes=[
     {
@@ -40,6 +42,11 @@ const routes=[
                 exact:true
             },
             {
+                path:'/admin/courses',
+                component:CoursesAdmin,
+                exact:true
+            },
+            {
                 component:Error404
             }
         ]
@@ -58,6 +65,11 @@ const routes=[
             {
                 path:"/contact",
                 component:Contact,
+                exact:true
+            },
+            {
+                path:"/courses",
+                component:Courses,
                 exact:true
             },
             {

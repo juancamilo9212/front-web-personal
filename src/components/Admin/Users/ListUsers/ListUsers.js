@@ -28,7 +28,7 @@ export default function ListUsers(props){
             <AddUserForm 
             setIsVisibleModal={setIsVisibleModal} 
             setReloadUsers={setReloadUsers}/>
-        )
+        );
     }
     
     const deleteUser= (token,user) =>{
@@ -86,7 +86,6 @@ export default function ListUsers(props){
             </div>
             <Button type="primary" 
             onClick={addModalUser}
-            
             >
                 Nuevo Usuario
             </Button>

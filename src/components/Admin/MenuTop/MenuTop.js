@@ -4,7 +4,7 @@ import {MenuUnfoldOutlined, MenuFoldOutlined,PoweroffOutlined} from '@ant-design
 import './MenuTop.scss';
 import logo from '../../../assets/img/png/logo.png';
 import {logOut} from '../../../api/auth';
-import { Redirect } from 'react-router-dom';
+
 
 export default function MenuTop(props){
 
