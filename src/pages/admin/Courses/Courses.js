@@ -8,7 +8,7 @@ export default function Courses() {
 
     useEffect(() => {
         getCoursesApi().then(response => {
-        console.log(response)
+        //console.log(response)
         setCourses(response.courses)
         })
         setReloadCourses(false);

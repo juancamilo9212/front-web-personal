@@ -7,6 +7,7 @@ import './CoursesList.scss';
 import {EditOutlined,DeleteOutlined} from '@ant-design/icons';
 import {getAccessTokenApi} from '../../../api/auth' ;
 import AddCourseForm from '../AddCourseForm';
+import {updateCourseApi} from '../../../api/courses'
 
 
 
@@ -21,7 +22,13 @@ export default function CoursesList(props) {
     const [modalContent, setModalContent]=useState(null);
 
     const onSort = (sortedList,dropEvent) =>{
-        console.log(sortedList);
+        const token = getAccessTokenApi();
+        sortedList.forEach(item => {
+            const {_id}=item.content.props.course;
+            const order=item.rank;
+            const body={order:order}
+            updateCourseApi(token,_id,body);
+        })
         
     }
 
@@ -38,7 +45,7 @@ export default function CoursesList(props) {
         )
     }
 
-    const editCourseModal = () => {
+    const editCourseModal = course => {
         setIsVisibleModal(true);
         setModalTitle("Actualizando el curso");
         setModalContent(
@@ -46,23 +53,23 @@ export default function CoursesList(props) {
                 <AddCourseForm
                 setIsVisibleModal={setIsVisibleModal}
                 setReloadCourses={setReloadCourses}
-                courses={courses}
+                course={course}
                 />
             </div>
         )
     }
 
-    const deleteCourse = (course) => {
+    const deleteCourse = (courses) => {
         
         const token = getAccessTokenApi()
         confirm({
             title: "Eliminando curso",
-            content: `¿Estás seguro que quieres eliminar el curso ${course.idCourse}?`,
+            content: `¿Estás seguro que quieres eliminar el curso ${courses.idCourse}?`,
             okText: "Eliminar",
             okType:"danger",
             cancelText: "Cancelar",
             onOk(){
-                deleteCourseApi(token,course._id).then(response => {
+                deleteCourseApi(token,courses._id).then(response => {
                     notification["success"]({
                         message:response.message
                     })
@@ -76,8 +83,6 @@ export default function CoursesList(props) {
         })
         
     }
-
-    //2555994   
 
     useEffect(() => {
         const listCoursesArray=[];
@@ -147,7 +152,7 @@ function Course(props){
         <Item 
         actions={[
             <Button type="primary" 
-            onClick={editCourseModal}
+            onClick={() => editCourseModal(course)}
             >
             <EditOutlined />
             </Button>,

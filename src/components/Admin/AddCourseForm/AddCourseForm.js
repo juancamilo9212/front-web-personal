@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState,useEffect} from 'react';
 import {getAccessTokenApi} from '../../../api/auth';
 import {addCourseApi,updateCourseApi} from '../../../api/courses';
 import {Row, Col, Form, Input, Button, notification} from 'antd';
@@ -6,20 +6,22 @@ import {KeyOutlined,GiftOutlined,DollarOutlined, LinkOutlined} from '@ant-design
 import './AddCourseForm.scss';
 
 export default function AddCourseForm(props) {
-    const {setIsVisibleModal, setReloadCourses, courses} = props;
+    const {setIsVisibleModal, setReloadCourses, course} = props;
     const [courseData, setCourseData]=useState({});
+    
+    useEffect(() => {
+        course ? setCourseData(course):setCourseData({});
+    }, [course])
 
     const updateCourse = () => {
-        const id=courses._id;
+        
         const token= getAccessTokenApi();
-        updateCourseApi(token,id,courseData).then(response =>{
-            const typeNotification=response.code === 200 ? "success":"warning";
-                notification[typeNotification]({
+        updateCourseApi(token,course._id,courseData).then(response =>{
+                notification["success"]({
                     message:response.message
                 })
                 setIsVisibleModal(false);
                 setReloadCourses(true);
-                setCourseData({})
             }).catch(err => {
                 notification["error"]({
                     message:err
@@ -43,7 +45,7 @@ export default function AddCourseForm(props) {
                 })
                 setIsVisibleModal(false);
                 setReloadCourses(true);
-                setCourseData({})
+                setCourseData({});
             }).catch(err => {
                 notification["error"]({
                     message:err
@@ -55,7 +57,7 @@ export default function AddCourseForm(props) {
     return (
         <div className="add-edit-course-form">
             <AddEditForm 
-            courses={courses}
+            course={course}
             courseData={courseData}
             setCourseData={setCourseData}
             addCourse={addCourse}
@@ -67,16 +69,16 @@ export default function AddCourseForm(props) {
 
 function AddEditForm(props){
 
-    const {courses,courseData,setCourseData, addCourse, updateCourse}= props;
+    const {course,courseData,setCourseData, addCourse, updateCourse}= props;
     const {Item}=Form;
     return (
-    <Form className="form-add-edit" onSubmitCapture={courses ? updateCourse:addCourse}>
+    <Form className="form-add-edit" onSubmitCapture={course ? updateCourse:addCourse}>
         <Item>
             <Input prefix={<KeyOutlined/>} 
             placeholder="Id del curso"
             value={courseData.idCourse}
             onChange={e => setCourseData({...courseData,idCourse:e.target.value})}
-            disabled={courses ? true:false}
+            disabled={course ? true:false}
             />
         </Item>
 
@@ -106,7 +108,7 @@ function AddEditForm(props){
 
         <Item>
             <Button type="primary" htmlType="submit" className="btn-submit">
-                {courses ? "Actualizar curso":"Crear curso"}
+                {course ? "Actualizar curso":"Crear curso"}
             </Button>
         </Item>
     </Form>
